@@ -237,7 +237,10 @@ Respond concisely, thoughtfully, and pragmatically in markdown. Give actionable 
   }
 
   // Static File Serving
-  let filePath = path.join(__dirname, cleanUrl === '/' ? 'index.html' : cleanUrl);
+  let filePath = path.join(__dirname, 'public', cleanUrl === '/' ? 'index.html' : cleanUrl);
+  if (!fs.existsSync(filePath)) {
+    filePath = path.join(__dirname, cleanUrl === '/' ? 'index.html' : cleanUrl);
+  }
   const ext = path.extname(filePath).toLowerCase();
   const contentType = MIME_TYPES[ext] || 'application/octet-stream';
 
