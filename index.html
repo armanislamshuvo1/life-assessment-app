@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeSync — AI Holistic Life & Career Assessment (Gemini Powered)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <!-- Chart.js for Radar Chart -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Canvas Confetti for Celebration -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+</head>
+<body class="dark-theme">
+  <div class="background-decorations">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+  </div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-logo" id="logoBtn">
+        <span class="brand-icon">✨</span>
+        <div class="brand-text">
+          <span class="brand-title">LifeSync <span class="ai-pill">Gemini 2.5 AI</span></span>
+          <span class="brand-subtitle">AI-Powered Holistic Life & Career Audit</span>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="historyBtn" class="btn btn-outline btn-sm" title="View past assessment history">
+          📜 History
+        </button>
+        <button id="themeToggleBtn" class="btn btn-icon" title="Toggle dark/light theme" aria-label="Toggle theme">
+          <span id="themeIcon">☀️</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-main">
+
+    <!-- 1. INTRO / WELCOME SCREEN -->
+    <section id="welcomeScreen" class="screen-panel active-screen">
+      <div class="hero-card glass-panel">
+        <div class="hero-badge">🤖 Powered by Google Gemini 2.5 Flash AI</div>
+        <h1 class="hero-title">Discover Your Life Equilibrium & Career Alignment</h1>
+        <p class="hero-subtitle">
+          Take a deep, 3-minute diagnostic across <strong>6 fundamental pillars of life</strong>.
+          Our Gemini AI Coach synthesizes your responses, uncovers systemic root causes, and crafts an executive 30-day growth protocol.
+        </p>
+
+        <div class="pillars-preview-grid">
+          <div class="pillar-pill pillar-c">
+            <span class="p-icon">💼</span>
+            <div><strong>Career & Ambition</strong><p>Direction & growth</p></div>
+          </div>
+          <div class="pillar-pill pillar-h">
+            <span class="p-icon">⚡</span>
+            <div><strong>Health & Vitality</strong><p>Sleep, energy, body</p></div>
+          </div>
+          <div class="pillar-pill pillar-m">
+            <span class="p-icon">🧠</span>
+            <div><strong>Mind & Emotions</strong><p>Stress & calm</p></div>
+          </div>
+          <div class="pillar-pill pillar-f">
+            <span class="p-icon">💰</span>
+            <div><strong>Finance & Wealth</strong><p>Security & assets</p></div>
+          </div>
+          <div class="pillar-pill pillar-r">
+            <span class="p-icon">❤️</span>
+            <div><strong>Relationships</strong><p>Love & community</p></div>
+          </div>
+          <div class="pillar-pill pillar-l">
+            <span class="p-icon">🌱</span>
+            <div><strong>Lifestyle & Joy</strong><p>Hobbies & purpose</p></div>
+          </div>
+        </div>
+
+        <!-- Optional User Context Box -->
+        <div class="user-context-input-box">
+          <label for="userContextInput">✍️ Optional: Add any specific context for your AI Coach (career transition, current challenges, priorities):</label>
+          <textarea id="userContextInput" placeholder="e.g. I work as a developer, feeling physically drained after long work sprints, aiming to get promoted while maintaining time for gym and family..."></textarea>
+        </div>
+
+        <div class="hero-cta-box">
+          <button id="startAssessmentBtn" class="btn btn-primary btn-lg pulse-glow">
+            Start AI Assessment ➔
+          </button>
+          <div class="hero-meta">
+            <span>⏱️ 24 Questions (~3 mins)</span>
+            <span>⚡ Real-Time Gemini 2.5 Synthesis</span>
+            <span>💬 Interactive Post-Audit AI Coach</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. QUESTION SCREEN -->
+    <section id="questionScreen" class="screen-panel">
+      <div class="quiz-card glass-panel">
+        
+        <!-- Top bar: Pillar Badge & Counter -->
+        <div class="quiz-header">
+          <div class="category-indicator" id="categoryBadge">
+            <span id="categoryIcon">💼</span>
+            <span id="categoryName">Career & Ambition</span>
+          </div>
+          <div class="quiz-progress-text">
+            Question <span id="currentQNum">1</span> of <span id="totalQNum">24</span>
+          </div>
+        </div>
+
+        <!-- Progress bar -->
+        <div class="progress-track">
+          <div class="progress-fill" id="progressBar" style="width: 4%;"></div>
+        </div>
+
+        <!-- Question Body -->
+        <div class="question-container">
+          <h2 class="question-text" id="questionText">Loading question...</h2>
+          <p class="question-context" id="questionContext">Contextual explanation appears here.</p>
+
+          <!-- 1 to 5 Options Grid -->
+          <div class="options-group" id="optionsContainer" role="radiogroup" aria-label="Assessment scale">
+            <!-- Dynamically populated options -->
+          </div>
+        </div>
+
+        <!-- Navigation buttons -->
+        <div class="quiz-footer">
+          <button id="prevBtn" class="btn btn-secondary" disabled>
+            ← Previous
+          </button>
+          <div class="keyboard-hint">
+            <span>Press keys <strong>1-5</strong> &bull; <strong>Enter</strong> for next</span>
+          </div>
+          <button id="nextBtn" class="btn btn-primary" disabled>
+            Next →
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 3. AI GENERATING / LOADING SCREEN -->
+    <section id="loadingScreen" class="screen-panel">
+      <div class="loading-card glass-panel text-center">
+        <div class="ai-sparkle-loader">✨</div>
+        <h2 class="loading-title">Gemini 2.5 AI is Analyzing Your Profile...</h2>
+        <p class="loading-subtitle">
+          Cross-referencing your 6 life pillars, identifying subconscious energy leaks, and building your personalized 30-day blueprint.
+        </p>
+        <div class="loading-spinner-bar">
+          <div class="spinner-indeterminate"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. ASSESSMENT RESULTS SCREEN -->
+    <section id="resultsScreen" class="screen-panel">
+      <div class="results-wrapper">
+
+        <!-- Top summary header -->
+        <div class="results-header glass-panel">
+          <div class="results-header-content">
+            <div class="archetype-badge-container">
+              <span class="archetype-badge" id="resArchetypeBadge">🌟 Exemplary Equilibrium</span>
+              <span class="ai-gen-tag">✨ Gemini AI Diagnostic</span>
+              <h1 class="archetype-title" id="resArchetypeTitle">The Harmonious Dynamo</h1>
+            </div>
+            <p class="archetype-desc" id="resArchetypeDesc">
+              Description of your profile assessment.
+            </p>
+          </div>
+
+          <!-- Overall Score Card -->
+          <div class="overall-score-box">
+            <div class="score-circle-outer">
+              <svg class="score-circle-svg" viewBox="0 0 120 120">
+                <circle class="score-circle-bg" cx="60" cy="60" r="52"></circle>
+                <circle class="score-circle-progress" id="scoreCircleSvg" cx="60" cy="60" r="52"></circle>
+              </svg>
+              <div class="score-circle-inner">
+                <span class="score-number" id="resOverallScore">88</span>
+                <span class="score-label">/ 100</span>
+              </div>
+            </div>
+            <div class="score-title">Holistic Life Index</div>
+          </div>
+        </div>
+
+        <!-- AI Executive Root-Cause Interplay Card -->
+        <div class="ai-interplay-card glass-panel">
+          <div class="ai-interplay-header">
+            <span class="ai-icon">🧬</span>
+            <div>
+              <h3>AI Root-Cause System Interplay</h3>
+              <p>How your career, physical stamina, mind, and finances dynamically influence each other:</p>
+            </div>
+          </div>
+          <div class="ai-interplay-content" id="resRootCause">
+            Loading AI root-cause analysis...
+          </div>
+        </div>
+
+        <!-- Results Grid: Radar Chart + Pillar Breakdown -->
+        <div class="results-grid">
+          
+          <!-- Wheel of Life Radar Chart -->
+          <div class="chart-card glass-panel">
+            <div class="card-header-row">
+              <h3>🎡 Wheel of Life Radar</h3>
+              <span class="chart-subtitle">Shape indicates balance vs friction</span>
+            </div>
+            <div class="chart-wrapper">
+              <canvas id="radarChart"></canvas>
+            </div>
+          </div>
+
+          <!-- Pillar Detailed Scores -->
+          <div class="pillars-card glass-panel">
+            <div class="card-header-row">
+              <h3>📊 Pillar Breakdown</h3>
+              <span class="chart-subtitle">Quantitative Metrics</span>
+            </div>
+            <div class="pillars-list" id="pillarsList">
+              <!-- Dynamically populated -->
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Deep Insights: Superpowers & Friction Points -->
+        <div class="insights-grid">
+          <div class="insight-card glass-panel superpower-border">
+            <div class="insight-header">
+              <span class="insight-icon">🌟</span>
+              <div>
+                <h4>Top Superpowers & Momentum</h4>
+                <p>Identified strengths and how to strategically leverage them</p>
+              </div>
+            </div>
+            <div class="insight-body" id="superpowersContainer">
+              <!-- Populated -->
+            </div>
+          </div>
+
+          <div class="insight-card glass-panel friction-border">
+            <div class="insight-header">
+              <span class="insight-icon">⚠️</span>
+              <div>
+                <h4>Critical Blindspots & Energy Leaks</h4>
+                <p>Subconscious friction points holding your equilibrium back</p>
+              </div>
+            </div>
+            <div class="insight-body" id="growthLeversContainer">
+              <!-- Populated -->
+            </div>
+          </div>
+        </div>
+
+        <!-- AI 4-Week Action Protocol -->
+        <div class="action-plan-card glass-panel">
+          <div class="action-header">
+            <div>
+              <h3>🎯 Gemini's 4-Week Personalized Action Protocol</h3>
+              <p>A sequenced, micro-habit roadmap built specifically for your lifestyle:</p>
+            </div>
+          </div>
+          <div class="action-items-list" id="actionItemsList">
+            <!-- Populated -->
+          </div>
+        </div>
+
+        <!-- Provocative Coaching Question -->
+        <div class="coaching-question-card glass-panel">
+          <div class="coach-avatar">🤔</div>
+          <div class="coach-question-body">
+            <h4>Reflection Question from your AI Coach:</h4>
+            <p id="resCoachingQuestion">Loading reflection...</p>
+          </div>
+        </div>
+
+        <!-- INTERACTIVE CHAT WITH YOUR AI COACH -->
+        <div class="coach-chat-card glass-panel">
+          <div class="coach-chat-header">
+            <div class="coach-info">
+              <span class="coach-badge-dot"></span>
+              <h4>💬 Chat Live with Your Life & Career Coach</h4>
+            </div>
+            <span class="coach-sub">Ask follow-up questions, seek advice on specific habits, or dig deeper into your scores</span>
+          </div>
+
+          <div class="chat-messages-container" id="chatMessages">
+            <div class="chat-bubble coach">
+              <div class="bubble-sender">AI Coach</div>
+              <div class="bubble-text">
+                I've reviewed your full assessment. Ask me anything about your results, how to handle specific challenges, or how to implement your 4-week roadmap!
+              </div>
+            </div>
+          </div>
+
+          <form id="chatForm" class="chat-input-bar">
+            <input type="text" id="chatInput" placeholder="e.g. How can I balance my career ambitions without feeling overwhelmed at night?" autocomplete="off" required>
+            <button type="submit" class="btn btn-primary" id="chatSendBtn">Send ➔</button>
+          </form>
+        </div>
+
+        <!-- Results Footer Actions -->
+        <div class="results-actions-bar">
+          <button id="printBtn" class="btn btn-outline btn-lg">
+            🖨️ Print / Save as PDF
+          </button>
+          <button id="retakeBtn" class="btn btn-primary btn-lg">
+            🔄 Retake Assessment
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- History Modal -->
+  <div id="historyModal" class="modal-backdrop">
+    <div class="modal-card glass-panel">
+      <div class="modal-header">
+        <h3>📜 Past Assessment History</h3>
+        <button id="closeHistoryBtn" class="modal-close">&times;</button>
+      </div>
+      <div class="modal-body" id="historyModalBody">
+        <p class="empty-state">No past assessments saved yet. Complete your first one today!</p>
+      </div>
+      <div class="modal-footer">
+        <button id="clearHistoryBtn" class="btn btn-outline btn-sm">Clear History</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

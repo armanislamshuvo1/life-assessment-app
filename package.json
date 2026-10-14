@@ -1,0 +1,12 @@
+{
+  "name": "lifesync-assessment-app",
+  "version": "1.0.0",
+  "description": "Holistic Life & Career Assessment Diagnostic Web Application",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "keywords": ["assessment", "life-wheel", "career", "health", "wellness", "productivity"],
+  "author": "LifeSync",
+  "license": "MIT"
+}
