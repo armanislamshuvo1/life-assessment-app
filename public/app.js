@@ -113,6 +113,10 @@ function switchScreen(targetScreen) {
 }
 
 function startAssessment() {
+  if (autoAdvanceTimer) {
+    clearTimeout(autoAdvanceTimer);
+    autoAdvanceTimer = null;
+  }
   state.currentIndex = 0;
   state.answers = {};
   state.userNotes = (userContextInput?.value || '').trim();
@@ -170,7 +174,9 @@ function renderCurrentQuestion() {
   nextBtn.textContent = state.currentIndex === QUESTIONS.length - 1 ? '✨ Generate AI Assessment' : 'Next →';
 }
 
-function selectOption(questionId, value) {
+let autoAdvanceTimer = null;
+
+function selectOption(questionId, value, autoAdvance = true) {
   state.answers[questionId] = value;
   
   const cards = optionsContainer.querySelectorAll('.option-card');
@@ -181,9 +187,24 @@ function selectOption(questionId, value) {
   });
 
   nextBtn.disabled = false;
+
+  if (autoAdvance) {
+    if (autoAdvanceTimer) {
+      clearTimeout(autoAdvanceTimer);
+    }
+    autoAdvanceTimer = setTimeout(() => {
+      autoAdvanceTimer = null;
+      handleNextQuestion();
+    }, 260);
+  }
 }
 
 function handleNextQuestion() {
+  if (autoAdvanceTimer) {
+    clearTimeout(autoAdvanceTimer);
+    autoAdvanceTimer = null;
+  }
+
   const q = QUESTIONS[state.currentIndex];
   if (!state.answers[q.id]) return;
 
@@ -196,6 +217,11 @@ function handleNextQuestion() {
 }
 
 function goToPreviousQuestion() {
+  if (autoAdvanceTimer) {
+    clearTimeout(autoAdvanceTimer);
+    autoAdvanceTimer = null;
+  }
+
   if (state.currentIndex > 0) {
     state.currentIndex--;
     renderCurrentQuestion();

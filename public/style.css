@@ -588,10 +588,15 @@ body.light-theme .option-card {
   transform: translateX(4px);
 }
 
+.option-card:active {
+  transform: scale(0.985);
+}
+
 .option-card.selected {
-  background: rgba(99, 102, 241, 0.12);
+  background: rgba(99, 102, 241, 0.16);
   border-color: var(--accent-primary);
-  box-shadow: 0 0 16px rgba(99, 102, 241, 0.2);
+  box-shadow: 0 0 18px rgba(99, 102, 241, 0.28);
+  transform: translateX(6px);
 }
 
 .option-number-badge {
